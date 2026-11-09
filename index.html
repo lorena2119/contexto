@@ -1,13 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>contexto</title>
+    <title>ConTexto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <div id="app"></div>
+    <div class="bg" aria-hidden="true">
+      <span class="bg__blob bg__blob--a"></span>
+      <span class="bg__blob bg__blob--b"></span>
+      <span class="bg__blob bg__blob--c"></span>
+    </div>
+    <a class="topbar" href="#/" aria-label="Ir al inicio">
+      <span class="topbar__logo" aria-hidden="true"></span>
+      <span id="brand-name" class="topbar__name"></span>
+    </a>
+    <main id="app" tabindex="-1"></main>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
