@@ -269,3 +269,16 @@ h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.35rem; }
 .feedback__box--ok { background: #e6f6ee; border-color: #bfe3d0; }
 .feedback__title { display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; margin-bottom: 0.4rem; }
 .feedback__box p { margin: 0.3rem 0 0; }
+
+/* Bloques plegables para el adulto */
+.adult-details {
+  margin: 1.25rem 0;
+  padding: 0.9rem 1.2rem;
+  border: 1px dashed #cfd2f5;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.adult-details summary { cursor: pointer; font-weight: 700; color: var(--primary); }
+.adult-details ul { margin: 0.8rem 0 0; padding-left: 1.2rem; }
+.adult-details li { margin-bottom: 0.3rem; }
+.adult-details p { margin: 0.6rem 0; color: var(--muted); }

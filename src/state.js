@@ -1,13 +1,16 @@
 import { STORAGE_KEY } from './config.js';
 
-const defaultState = { nickname: '' };
+function freshState() {
+  // progress: { [categoria]: { level, sessions, stoppedStreak } }
+  return { nickname: '', progress: {} };
+}
 
 export function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...defaultState, ...JSON.parse(raw) } : { ...defaultState };
+    return raw ? { ...freshState(), ...JSON.parse(raw) } : freshState();
   } catch {
-    return { ...defaultState };
+    return freshState();
   }
 }
 

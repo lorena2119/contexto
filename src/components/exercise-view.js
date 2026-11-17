@@ -68,7 +68,7 @@ export function createExerciseView(exercise, { position, total, onNext, onExit }
     hintBox.textContent = '';
     const isLast = position === total;
     const nextButton = el('button', { class: 'btn', type: 'button' },
-      isLast ? 'Terminar' : 'Siguiente', icon('arrow', 20));
+    isLast ? 'Continuar' : 'Siguiente', icon('arrow', 20));
     nextButton.addEventListener('click', () => onNext({
       exerciseId: exercise.id,
       category: exercise.category,
