@@ -1,3 +1,5 @@
+import { stopSpeech } from './services/speech.js';
+
 const routes = {};
 
 export function registerRoute(path, render) {
@@ -6,6 +8,7 @@ export function registerRoute(path, render) {
 
 export function startRouter(container) {
   const render = () => {
+    stopSpeech();
     const path = location.hash.replace(/^#/, '') || '/';
     const screen = routes[path] || routes['/'];
     container.replaceChildren(screen());

@@ -190,3 +190,82 @@ h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.35rem; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* Banco de ejercicios */
+.filters { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+.field { display: grid; gap: 0.35rem; min-width: 220px; }
+.input--select { min-height: 48px; }
+
+.bank { display: grid; gap: 1.1rem; margin-bottom: 1.5rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem; }
+.tags .badge { margin-top: 0; }
+
+.exercise .exercise__story { color: var(--ink); font-size: 1.05rem; margin: 0 0 0.75rem; }
+.exercise .exercise__question { font-size: 1.15rem; margin: 0 0 0.6rem; }
+.exercise__options { list-style: none; margin: 0 0 0.9rem; padding: 0; display: grid; gap: 0.4rem; }
+.exercise__options li {
+  padding: 0.55rem 0.9rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #d5d8f0;
+}
+.exercise__options li.is-correct { border-color: #3aa57a; background: #e6f6ee; font-weight: 600; }
+.exercise .exercise__explanation { font-size: 0.95rem; margin-top: 0.4rem; }
+
+/* Iconos */
+.icon { flex-shrink: 0; }
+.card__icon { color: var(--primary); }
+.badge--icon { display: inline-flex; align-items: center; gap: 0.4rem; }
+.exercise__options li.is-correct { display: flex; align-items: center; gap: 0.5rem; }
+
+/* Tarjetas que son botones (menú del niño) */
+.card--button { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.card__title { display: block; font-size: 1.25rem; font-weight: 800; margin-bottom: 0.35rem; }
+.card__text { display: block; color: var(--muted); }
+.btn { gap: 0.5rem; }
+.btn--small { min-height: 44px; padding: 0.5rem 1.2rem; }
+.summary p { color: var(--ink); font-size: 1.05rem; }
+
+/* Pantalla de ejercicio */
+.exercise-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.progress { display: flex; gap: 0.4rem; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: #d5d8f0; }
+.dot--on { background: var(--primary); }
+.link-btn { background: none; border: none; color: var(--muted); font: inherit; text-decoration: underline; cursor: pointer; padding: 0.5rem; }
+
+.story { margin-bottom: 1.25rem; }
+.story .story__text { font-size: 1.2rem; line-height: 1.7; color: var(--ink); margin: 0 0 1rem; }
+.story .story__text:last-child { margin-bottom: 0; }
+
+.exercise-q { font-size: 1.4rem; margin: 0 0 0.5rem; padding: 0.4rem 0.6rem; border-radius: 14px; transition: background 0.3s ease; }
+.exercise-q.is-highlighted { background: #e4e1ff; }
+.hint { min-height: 1.5rem; color: var(--primary); font-weight: 600; margin: 0 0 0.75rem; }
+
+.options { display: grid; gap: 0.8rem; margin-bottom: 1.25rem; }
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 64px;
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  font: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: var(--glass);
+  border: 2px solid #d5d8f0;
+  border-radius: 22px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.option:hover:not(:disabled) { border-color: var(--accent); background: #fff; }
+.option:disabled { cursor: default; }
+.option:disabled:not(.option--correct):not(.option--chosen) { opacity: 0.65; }
+.option--correct { border-color: #3aa57a; background: #e6f6ee; font-weight: 700; }
+.option--chosen { border-color: #e0a526; background: #fff6e3; }
+.option__tag { margin-left: auto; font-size: 0.8rem; font-weight: 700; color: #8a6410; }
+
+.feedback__box { padding: 1.1rem 1.25rem; border-radius: 22px; background: #fff6e3; border: 1px solid #f0d9a0; margin-bottom: 1rem; }
+.feedback__box--ok { background: #e6f6ee; border-color: #bfe3d0; }
+.feedback__title { display: flex; align-items: center; gap: 0.5rem; font-size: 1.15rem; margin-bottom: 0.4rem; }
+.feedback__box p { margin: 0.3rem 0 0; }
