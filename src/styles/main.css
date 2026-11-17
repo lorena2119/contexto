@@ -282,3 +282,34 @@ h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.35rem; }
 .adult-details ul { margin: 0.8rem 0 0; padding-left: 1.2rem; }
 .adult-details li { margin-bottom: 0.3rem; }
 .adult-details p { margin: 0.6rem 0; color: var(--muted); }
+
+/* Panel de progreso */
+.progress-grid { display: grid; gap: 1.1rem; margin-bottom: 1.5rem; }
+@media (min-width: 720px) { .progress-grid { grid-template-columns: 1fr 1fr; } }
+
+.progress-card__head { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1rem; }
+.progress-card__head .card__icon { margin-bottom: 0; }
+.progress-card__head h2 { margin: 0; }
+.progress-card .progress-card__sub { margin: 0; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0 0 1rem; }
+.stats div {
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #d5d8f0;
+}
+.stats dt { font-size: 0.8rem; color: var(--muted); }
+.stats dd { margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--ink); }
+
+.chart { display: block; max-width: 100%; height: auto; color: var(--primary); }
+.chart-caption { font-size: 0.8rem; color: var(--muted); margin: 0.3rem 0 0; }
+
+.session-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: 0.5rem; }
+.session-list li {
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+}
+.session-list .session-list__meta { color: var(--muted); font-size: 0.9rem; }

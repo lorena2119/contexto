@@ -2,7 +2,8 @@ import { STORAGE_KEY } from './config.js';
 
 function freshState() {
   // progress: { [categoria]: { level, sessions, stoppedStreak } }
-  return { nickname: '', progress: {} };
+  // history: lista de sesiones (ver services/history.js)
+  return { nickname: '', progress: {}, history: [] };
 }
 
 export function loadState() {
@@ -19,5 +20,13 @@ export function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
     // Si el navegador bloquea el almacenamiento, la app sigue funcionando sin guardar.
+  }
+}
+
+export function clearAllData() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Nada que borrar si no hay almacenamiento disponible.
   }
 }

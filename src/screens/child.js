@@ -7,6 +7,7 @@ import {
   createSession, currentExercise, recordResult, closeBlock, advanceLevel,
   exitSession, nextProgress, summarize, MASTERY_THRESHOLD,
 } from '../services/session.js';
+import { buildSessionRecord, addSession } from '../services/history.js';
 
 export function childScreen() {
   const state = loadState();
@@ -78,10 +79,13 @@ export function childScreen() {
   }
 
   // ---------- Práctica ----------
-  function saveProgress(session) {
+    function saveProgress(session) {
     if (session.saved) return;
     session.saved = true;
     state.progress[session.category] = nextProgress(state.progress[session.category], session);
+    if (session.results.length > 0) {
+      addSession(state, buildSessionRecord(session, state.nickname));
+    }
     saveState(state);
   }
 
