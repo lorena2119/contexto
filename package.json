@@ -1,14 +1,20 @@
 {
-  "name": "contexto",
+  "name": "entrelineas",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "node server/index.js"
   },
   "devDependencies": {
     "vite": "^8.3.6"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0"
   }
 }

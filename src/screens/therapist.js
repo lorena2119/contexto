@@ -3,7 +3,7 @@ import { el } from '../utils/dom.js';
 const sections = [
   { title: 'Progreso', text: 'Aciertos, ayudas y nivel por categoría.', href: '#/terapeuta/progreso' },
   { title: 'Banco de ejercicios', text: 'Revisar los ejercicios por categoría y nivel.', href: '#/terapeuta/banco' },
-  { title: 'Asistente de IA', text: 'Analizar frases y resumir avances.', stage: 'Etapa 7' },
+  { title: 'Asistente de IA', text: 'Analizar frases con IA (próximamente: crear ejercicios y resumir avances).', href: '#/terapeuta/asistente' },
 ];
 
 function sectionCard({ title, text, stage, href }) {

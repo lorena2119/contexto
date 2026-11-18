@@ -313,3 +313,14 @@ h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.35rem; }
   border: 1px solid var(--glass-border);
 }
 .session-list .session-list__meta { color: var(--muted); font-size: 0.9rem; }
+/* Asistente de IA */
+.stack--wide { max-width: 640px; }
+.textarea { resize: vertical; min-height: 84px; }
+.ai-result { margin: 1.25rem 0 1.5rem; }
+.ai-block { margin-top: 1rem; }
+.ai-block h3 { font-size: 1rem; margin: 0 0 0.3rem; color: var(--primary); }
+.ai-block p, .ai-block li { color: var(--ink); margin: 0 0 0.3rem; }
+.ai-block ul { margin: 0; padding-left: 1.2rem; }
+.ai-meta { color: var(--muted); font-size: 0.9rem; }
+.ai-error { border-color: #f0d9a0; background: #fff6e3; }
+.ai-error { color: var(--ink); }

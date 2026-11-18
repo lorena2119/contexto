@@ -8,6 +8,7 @@ import { therapistBankScreen } from './screens/therapist-bank.js';
 import { validateBank } from './services/exerciseBank.js';
 import { EXERCISES } from './data/exercises.js';
 import { therapistProgressScreen } from './screens/therapist-progress.js';
+import { therapistAiScreen } from './screens/therapist-ai.js';
 
 document.title = APP_NAME;
 document.getElementById('brand-name').textContent = APP_NAME;
@@ -17,6 +18,7 @@ registerRoute('/nino', childScreen);
 registerRoute('/terapeuta', therapistScreen);
 registerRoute('/terapeuta/banco', therapistBankScreen);
 registerRoute('/terapeuta/progreso', therapistProgressScreen);
+registerRoute('/terapeuta/asistente', therapistAiScreen);
 
 // Solo en desarrollo: revisa que el banco esté completo y bien armado
 if (import.meta.env.DEV) {
