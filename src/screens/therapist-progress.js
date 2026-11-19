@@ -3,6 +3,8 @@ import { icon } from '../components/icons.js';
 import { CATEGORIES } from '../data/categories.js';
 import { loadState, clearAllData } from '../state.js';
 import { categoryStats, sessionAccuracy, toCsv } from '../services/history.js';
+import { buildSummaryData } from '../services/summary.js';
+import { generateSummary } from '../services/ai.js';
 
 const OUTCOME_LABELS = {
   completed: 'Completó los 3 niveles',
@@ -88,6 +90,51 @@ function downloadCsv(history) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+function summaryList(title, items) {
+  if (!items.length) return null;
+  return el('section', { class: 'ai-block' },
+    el('h3', {}, title),
+    el('ul', {}, items.map((item) => el('li', {}, item)))
+  );
+}
+
+// Resumen en lenguaje claro: a la IA solo viajan datos agregados (sin apodo, fechas ni ejercicios)
+function summarySection(history, progress) {
+  const resultBox = el('div', { class: 'ai-result', 'aria-live': 'polite' });
+  const button = el('button', { class: 'btn btn--small', type: 'button' },
+    icon('sparkles', 20), 'Generar resumen');
+
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    button.textContent = 'Generando resumen…';
+    resultBox.replaceChildren(el('p', { class: 'note' }, 'Un momento…'));
+    try {
+      const { resumen } = await generateSummary(buildSummaryData(history, progress));
+      resultBox.replaceChildren(
+        el('article', { class: 'card ai-card' },
+          el('p', {}, resumen.resumen),
+          summaryList('Lo que le está yendo bien', resumen.fortalezas),
+          summaryList('Para reforzar', resumen.para_reforzar),
+          summaryList('Ideas para practicar', resumen.sugerencias),
+          el('p', { class: 'ai-meta' }, resumen.aviso)
+        )
+      );
+    } catch (error) {
+      resultBox.replaceChildren(el('div', { class: 'card ai-error' }, error.message));
+    } finally {
+      button.disabled = false;
+      button.replaceChildren(icon('sparkles', 20), 'Generar resumen');
+    }
+  });
+
+  return el('section', { class: 'card' },
+    el('h2', {}, 'Resumen en lenguaje claro'),
+    el('p', {}, 'La IA redacta un resumen con los números de arriba. Solo recibe porcentajes y conteos por categoría: no se envía el apodo, las fechas ni los ejercicios. Revísalo siempre antes de usarlo; no es una evaluación clínica.'),
+    button,
+    resultBox
+  );
+}
+
 export function therapistProgressScreen() {
   const root = el('section', { class: 'screen' });
 
@@ -115,6 +162,7 @@ export function therapistProgressScreen() {
             categoryCard(category, history.filter((s) => s.category === category.id), progress[category.id])
           )
         ),
+        summarySection(history, progress),
         el('h2', {}, 'Últimas sesiones'),
         el('ul', { class: 'session-list' },
           [...history].reverse().slice(0, 10).map((s) => {

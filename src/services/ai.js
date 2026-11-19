@@ -27,3 +27,8 @@ export function analyzePhrase(frase, contexto) {
 export function generateExercise({ frase, contexto, tipo, significado, nivel }) {
   return post('/api/ejercicio', { frase, contexto, tipo, significado, nivel });
 }
+
+// Pide a la IA un resumen del progreso. Recibe solo datos agregados (ver services/summary.js)
+export function generateSummary(data) {
+  return post('/api/resumen', data);
+}

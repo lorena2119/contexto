@@ -4,6 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { SYSTEM_ANALYZE } from './prompts.js';
 import { parseAnalysis, demoAnalysis, findDemo } from './analysis.js';
 import { SYSTEM_EXERCISE, parseExercise } from './ejercicio.js';
+import { SYSTEM_SUMMARY, sanitizeSummaryData, summaryPrompt, parseSummary } from './resumen.js';
 
 const PORT = process.env.PORT || 3001;
 const TEMPORARY = [429, 500, 502, 503, 504];
@@ -240,6 +241,29 @@ app.post('/api/ejercicio', rateLimit, async (req, res) => {
   } catch (error) {
     console.error('Error al crear el ejercicio:', error.status || '', error.message);
     res.status(502).json({ error: explainError(error, 'crear la lección') });
+  }
+});
+
+// Resumen del progreso en lenguaje claro: recibe solo datos agregados (sin apodo ni fechas)
+app.post('/api/resumen', rateLimit, async (req, res) => {
+  const data = sanitizeSummaryData(req.body);
+  if (!data.categorias.length) return res.status(400).json({ error: 'No hay sesiones para resumir.' });
+
+  if (demoMode) {
+    return res.status(400).json({ error: 'En modo demostración no se puede generar el resumen. Configura una clave de IA en .env.' });
+  }
+
+  try {
+    const { resultado, proveedor, modelo } = await askAI({
+      system: SYSTEM_SUMMARY,
+      user: summaryPrompt(data),
+      maxTokens: 4096,
+      parse: parseSummary,
+    });
+    res.json({ modo: 'ia', proveedor, modelo, resumen: resultado });
+  } catch (error) {
+    console.error('Error al generar el resumen:', error.status || '', error.message);
+    res.status(502).json({ error: explainError(error, 'generar el resumen') });
   }
 });
 
