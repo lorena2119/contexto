@@ -1,6 +1,6 @@
 import { el } from '../utils/dom.js';
 import { CATEGORIES } from '../data/categories.js';
-import { LEVELS, getExercises } from '../services/exerciseBank.js';
+import { LEVELS, getExercises, isCustomExercise, deleteCustomExercise } from '../services/exerciseBank.js';
 import { icon } from '../components/icons.js';
 import { illustrationFor } from '../components/illustration.js';
 
@@ -16,13 +16,15 @@ function field(id, label, options, onChange) {
   );
 }
 
-function exerciseCard(ex) {
+function exerciseCard(ex, onDelete) {
   const category = CATEGORIES.find((c) => c.id === ex.category);
+  const custom = isCustomExercise(ex.id);
   return el('article', { class: 'card exercise' },
     el('div', { class: 'tags' },
       el('span', { class: 'badge badge--icon' }, icon(category.icon, 16), category.label),
       el('span', { class: 'badge' }, `Nivel ${ex.level}`),
-      el('span', { class: 'badge' }, `Versión ${ex.version}`)
+      el('span', { class: 'badge' }, `Versión ${ex.version}`),
+      custom ? el('span', { class: 'badge' }, 'Propia') : null
     ),
     illustrationFor(ex),
     el('p', { class: 'exercise__story' }, ex.story),
@@ -37,6 +39,16 @@ function exerciseCard(ex) {
     el('p', { class: 'exercise__explanation' }, el('strong', {}, 'Explicación: '), ex.explanation),
     ex.clues && ex.clues.length
       ? el('p', { class: 'exercise__explanation' }, el('strong', {}, 'Pistas: '), ex.clues.join(' · '))
+      : null,
+    custom
+      ? el('div', { class: 'actions' },
+          el('button', {
+            class: 'btn btn--ghost btn--small', type: 'button',
+            'aria-label': `Eliminar la lección: ${ex.question}`,
+            onclick: () => {
+              if (window.confirm('¿Eliminar esta lección? Esto no se puede deshacer.')) onDelete(ex.id);
+            },
+          }, icon('trash', 20), 'Eliminar'))
       : null
   );
 }
@@ -51,7 +63,7 @@ export function therapistBankScreen() {
       category: filters.category === 'todas' ? undefined : filters.category,
       level: filters.level === 'todos' ? undefined : Number(filters.level),
     });
-    list.replaceChildren(...items.map(exerciseCard));
+    list.replaceChildren(...items.map((ex) => exerciseCard(ex, (id) => { deleteCustomExercise(id); render(); })));
     count.textContent = `${items.length} ejercicio${items.length === 1 ? '' : 's'}`;
   }
 
@@ -70,7 +82,7 @@ export function therapistBankScreen() {
 
   return el('section', { class: 'screen' },
     el('h1', {}, 'Banco de ejercicios'),
-    el('p', { class: 'lead' }, 'Vista de revisión: aquí ves las respuestas correctas, que el niño no ve.'),
+    el('p', { class: 'lead' }, 'Vista de revisión: aquí ves las respuestas correctas, que el niño no ve. Las lecciones propias se pueden eliminar.'),
     el('div', { class: 'filters' }, categoryField, levelField),
     count,
     list,

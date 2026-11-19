@@ -1,7 +1,8 @@
 import { el } from '../utils/dom.js';
 import { icon } from './icons.js';
 import { CATEGORIES } from '../data/categories.js';
-import { LEVELS, VERSIONS, optionsCountForLevel, addCustomExercise } from '../services/exerciseBank.js';
+import { LEVELS, VERSIONS, optionsCountForLevel, addCustomExercise, getExercises } from '../services/exerciseBank.js';
+import { findByPhrase, findSimilar } from '../services/similarity.js';
 import { generateExercise } from '../services/ai.js';
 import { createSceneEditor } from './scene-editor.js';
 
@@ -14,6 +15,11 @@ export function canBecomeLesson(result) {
 function labeled(id, label, control) {
   return el('div', { class: 'field' }, el('label', { class: 'label', for: id }, label), control);
 }
+
+// Todas las lecciones de la categoría, aprobadas o no
+const existingIn = (categoryId) => getExercises({ category: categoryId, status: null });
+
+const describe = (ex) => `«${ex.story.length > 90 ? `${ex.story.slice(0, 90)}…` : ex.story}» (nivel ${ex.level}, versión ${ex.version})`;
 
 export function createLessonEditor({ phrase, context, result, onDone }) {
   const category = CATEGORIES.find((c) => c.id === TYPE_TO_CATEGORY[result.tipo]);
@@ -30,6 +36,13 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
       VERSIONS.map((v) => el('option', { value: v }, `Versión ${v}`))
     );
     const errorBox = el('p', { class: 'lesson-error', role: 'alert' }, message || '');
+    const repeated = findByPhrase(phrase, existingIn(category.id));
+    const repeatedNote = repeated.length
+      ? el('div', { class: 'card ai-error lesson-warning', role: 'status' },
+          el('p', {}, el('strong', {}, 'Ya hay una lección con esta frase en esta categoría. '),
+            'Revisa si de verdad quieres otra:'),
+          el('ul', {}, repeated.slice(0, 3).map((ex) => el('li', {}, describe(ex)))))
+      : null;
     const createButton = el('button', { class: 'btn btn--small', type: 'button' }, 'Crear borrador con IA');
 
     createButton.addEventListener('click', async () => {
@@ -57,6 +70,7 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
     root.replaceChildren(
       el('h3', {}, `Agregar a «${category.label}»`),
       el('p', {}, 'La IA propone una lección con su ilustración y tú la revisas y la editas antes de guardarla.'),
+      repeatedNote,
       el('div', { class: 'filters' },
         labeled('lesson-level', 'Nivel', levelSelect),
         labeled('lesson-version', 'Versión', versionSelect)
@@ -73,6 +87,7 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
     const explanation = el('textarea', { id: 'lesson-explanation', class: 'input textarea', rows: '2' }, draft.explicacion);
     const clues = el('textarea', { id: 'lesson-clues', class: 'input textarea', rows: '2' }, draft.pistas.join('\n'));
     const errorBox = el('p', { class: 'lesson-error', role: 'alert' });
+    const similarBox = el('div', { class: 'lesson-warning', role: 'status' });
     const sceneEditor = createSceneEditor(draft.escena, result.tipo);
 
     const optionRows = draft.opciones.map((text, i) => {
@@ -86,7 +101,8 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
       return { radio, input, row: el('div', { class: 'option-row' }, radio, input) };
     });
 
-    function save() {
+    function save(force = false) {
+      similarBox.replaceChildren();
       const correctIndex = optionRows.findIndex((r) => r.radio.checked);
       const texts = optionRows.map((r) => r.input.value.trim());
       if (correctIndex < 0) { errorBox.textContent = 'Marca cuál es la opción correcta.'; return; }
@@ -109,6 +125,19 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
       const scene = sceneEditor.getDescriptor();
       if (scene) exercise.escena = scene;
 
+      // Antes de guardar: ¿ya hay algo parecido en esta categoría?
+      const similar = force === true ? [] : findSimilar(exercise, existingIn(category.id));
+      if (similar.length) {
+        similarBox.replaceChildren(el('div', { class: 'card ai-error' },
+          el('p', {}, el('strong', {}, 'Se parece a lecciones que ya existen:')),
+          el('ul', {}, similar.map((m) =>
+            el('li', {}, `${describe(m.exercise)}${m.samePhrase ? ' · usa la misma frase' : ` · ${Math.round(m.score * 100)} % parecida`}`))),
+          el('div', { class: 'actions' },
+            el('button', { class: 'btn btn--small', type: 'button', onclick: () => save(true) }, 'Guardar de todos modos'),
+            el('p', { class: 'ai-meta' }, 'O cambia la historia o la pregunta y vuelve a guardar.'))));
+        return;
+      }
+
       const outcome = addCustomExercise(exercise);
       if (!outcome.ok) { errorBox.textContent = outcome.errors.join(' '); return; }
       renderSaved();
@@ -125,8 +154,9 @@ export function createLessonEditor({ phrase, context, result, onDone }) {
       el('h3', { class: 'lesson-subtitle' }, 'Ilustración'),
       sceneEditor.element,
       errorBox,
+      similarBox,
       el('div', { class: 'actions' },
-        el('button', { class: 'btn btn--small', type: 'button', onclick: save }, icon('check', 20), `Guardar en ${category.label}`),
+        el('button', { class: 'btn btn--small', type: 'button', onclick: () => save() }, icon('check', 20), `Guardar en ${category.label}`),
         el('button', { class: 'btn btn--ghost btn--small', type: 'button', onclick: () => renderStart() }, 'Volver atrás')
       )
     );

@@ -3,6 +3,7 @@ import { icon } from '../components/icons.js';
 import { CATEGORIES } from '../data/categories.js';
 import { loadState, clearAllData } from '../state.js';
 import { categoryStats, sessionAccuracy, toCsv } from '../services/history.js';
+import { isMastered } from '../services/session.js';
 import { buildSummaryData } from '../services/summary.js';
 import { generateSummary } from '../services/ai.js';
 
@@ -58,7 +59,8 @@ function categoryCard(category, sessions, progress) {
     el('div', {},
       el('h2', {}, category.label),
       el('p', { class: 'progress-card__sub' },
-        progress && progress.level ? `Nivel actual: ${progress.level}` : 'Sin práctica todavía')
+        progress && progress.level ? `Nivel actual: ${progress.level}` : 'Sin práctica todavía'),
+      isMastered(progress) ? el('span', { class: 'badge badge--icon' }, icon('check', 16), 'Dominado') : null
     )
   );
 
@@ -170,7 +172,7 @@ export function therapistProgressScreen() {
             return el('li', {},
               el('strong', {}, `${category ? category.label : s.category} · ${pct(sessionAccuracy(s))}`),
               el('div', { class: 'session-list__meta' },
-                `${formatDate(s.date)} · empezó en nivel ${s.startLevel} · ${OUTCOME_LABELS[s.outcome] || s.outcome}`)
+                `${formatDate(s.date)} · ${s.review ? 'repaso · ' : ''}empezó en nivel ${s.startLevel} · ${OUTCOME_LABELS[s.outcome] || s.outcome}`)
             );
           })
         )

@@ -8,6 +8,7 @@ export function buildSessionRecord(session, nickname) {
     category: session.category,
     startLevel: session.startLevel,
     outcome: session.outcome, // 'completed' | 'stopped' | 'exited'
+    review: Boolean(session.review), // true si fue un repaso de un módulo dominado
     highestPassed: session.highestPassed,
     levels: session.levelHistory,
     results: session.results.map((r) => ({
@@ -46,7 +47,7 @@ export function categoryStats(sessions) {
 
 const HEADERS = [
   'fecha', 'apodo', 'categoria', 'nivel_inicio', 'resultado_sesion',
-  'nivel_ejercicio', 'version', 'ejercicio', 'acierto', 'respuesta', 'ayudas', 'tiempo_s',
+  'nivel_ejercicio', 'version', 'ejercicio', 'acierto', 'respuesta', 'ayudas', 'tiempo_s', 'tipo_sesion',
 ];
 
 function cell(value) {
@@ -62,9 +63,9 @@ export function toCsv(sessions) {
       rows.push([
         s.date, s.nickname, s.category, s.startLevel, s.outcome,
         r.level, r.version, r.exerciseId, r.correct ? 1 : 0, r.chosenId,
-        r.hintsUsed, Math.round(r.timeMs / 1000),
+        r.hintsUsed, Math.round(r.timeMs / 1000), s.review ? 'repaso' : 'practica',
       ]);
     }
   }
-  return '\uFEFF' + rows.map((row) => row.map(cell).join(';')).join('\r\n');
+  return '﻿' + rows.map((row) => row.map(cell).join(';')).join('\r\n');
 }

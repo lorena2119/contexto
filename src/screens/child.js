@@ -5,7 +5,7 @@ import { loadState, saveState } from '../state.js';
 import { createExerciseView } from '../components/exercise-view.js';
 import {
   createSession, currentExercise, recordResult, closeBlock, advanceLevel,
-  exitSession, nextProgress, summarize, MASTERY_THRESHOLD,
+  exitSession, nextProgress, summarize, isMastered, MASTERY_THRESHOLD,
 } from '../services/session.js';
 import { buildSessionRecord, addSession } from '../services/history.js';
 
@@ -43,11 +43,17 @@ export function childScreen() {
   }
 
   // ---------- Menú ----------
+  function masteredBadge(label = 'Dominado') {
+    return el('span', { class: 'badge badge--icon' }, icon('check', 16), label);
+  }
+
   function categoryButton(category) {
+    const mastered = isMastered(state.progress[category.id]);
     const button = el('button', { class: 'card card--link card--button', type: 'button' },
       el('span', { class: 'card__icon' }, icon(category.icon, 28)),
       el('span', { class: 'card__title' }, category.childLabel),
-      el('span', { class: 'card__text' }, category.childText)
+      el('span', { class: 'card__text' }, mastered ? 'Ya lo dominas. Toca para repasarlo.' : category.childText),
+      mastered ? masteredBadge() : null
     );
     button.addEventListener('click', () => startPractice(category.id));
     return button;
@@ -90,7 +96,23 @@ export function childScreen() {
   }
 
   function startPractice(categoryId) {
-    showNext(createSession(categoryId, state.progress[categoryId]));
+    const session = createSession(categoryId, state.progress[categoryId]);
+    if (session.review) renderReviewIntro(session);
+    else showNext(session);
+  }
+
+  // Aviso antes de un repaso (el tema ya está dominado)
+  function renderReviewIntro(session) {
+    const category = CATEGORIES.find((c) => c.id === session.category);
+    root.replaceChildren(
+      el('h1', {}, 'Vamos a repasar'),
+      el('p', { class: 'lead' }, `Ya dominas «${category.childLabel}». Repasar ayuda a recordarlo mejor. Empezamos otra vez desde el principio.`),
+      el('div', { class: 'actions' },
+        el('button', { class: 'btn', type: 'button', onclick: () => showNext(session) }, 'Empezar el repaso', icon('arrow', 20)),
+        el('button', { class: 'btn btn--ghost', type: 'button', onclick: renderMenu }, 'Volver al menú')
+      )
+    );
+    window.scrollTo(0, 0);
   }
 
   function showNext(session) {
@@ -148,10 +170,13 @@ export function childScreen() {
     return el('details', { class: 'adult-details' },
       el('summary', {}, 'Resumen para el adulto'),
       el('ul', {},
+        el('li', {}, session.review ? 'Tipo de sesión: repaso de un módulo dominado' : 'Tipo de sesión: práctica'),
         el('li', {}, `Nivel de partida: ${session.startLevel}`),
         ...rows,
         el('li', {}, `Nivel más alto superado hoy: ${session.highestPassed || 'ninguno todavía'}`),
-        el('li', {}, `La próxima sesión empieza en el nivel ${progress ? progress.level : session.startLevel}`)
+        el('li', {}, isMastered(progress)
+          ? 'Módulo dominado: las próximas sesiones serán repasos desde el nivel 1'
+          : `La próxima sesión empieza en el nivel ${progress ? progress.level : session.startLevel}`)
       ),
       el('p', {}, `Un nivel se supera con al menos ${Math.round(MASTERY_THRESHOLD * 100)} % de aciertos a la primera.`)
     );
@@ -161,11 +186,18 @@ export function childScreen() {
     const { total, correct, hints } = summarize(session);
     const category = CATEGORIES.find((c) => c.id === session.category);
     const name = state.nickname;
-    const texts = {
-      completed: [`¡Lo lograste, ${name}!`, `Completaste todos los niveles de «${category.childLabel}».`],
-      stopped: [`¡Buen trabajo por intentarlo, ${name}!`, 'Esto se aprende poco a poco. Vamos a seguir practicando juntos.'],
-      exited: [`¡Buen trabajo, ${name}!`, `Practicaste «${category.childLabel}». Puedes seguir cuando quieras.`],
-    };
+    const texts = session.review
+      ? {
+          completed: [`¡Buen repaso, ${name}!`, `Repasaste todos los niveles de «${category.childLabel}».`],
+          stopped: [`¡Buen repaso, ${name}!`, 'Repasar también se aprende poco a poco. Este tema sigue siendo tuyo.'],
+          exited: [`¡Buen trabajo, ${name}!`, `Repasaste «${category.childLabel}». Puedes seguir cuando quieras.`],
+        }
+      : {
+          completed: [`¡Lo lograste, ${name}!`, `Completaste todos los niveles de «${category.childLabel}».`],
+          stopped: [`¡Buen trabajo por intentarlo, ${name}!`, 'Esto se aprende poco a poco. Vamos a seguir practicando juntos.'],
+          exited: [`¡Buen trabajo, ${name}!`, `Practicaste «${category.childLabel}». Puedes seguir cuando quieras.`],
+        };
+    const earnedMastery = session.outcome === 'completed' && !session.review;
     const [title, lead] = texts[session.outcome] || texts.exited;
 
     root.replaceChildren(
@@ -173,7 +205,8 @@ export function childScreen() {
       el('p', { class: 'lead' }, lead),
       el('div', { class: 'card summary' },
         el('p', {}, el('strong', {}, `${correct} de ${total}`), ' respuestas acertadas a la primera.'),
-        el('p', {}, hints === 0 ? 'No necesitaste ayudas.' : `Usaste ${hints} ${hints === 1 ? 'ayuda' : 'ayudas'}.`)
+        el('p', {}, hints === 0 ? 'No necesitaste ayudas.' : `Usaste ${hints} ${hints === 1 ? 'ayuda' : 'ayudas'}.`),
+        earnedMastery ? masteredBadge('Módulo dominado') : null
       ),
       adultSummary(session),
       el('div', { class: 'actions' },
