@@ -9,6 +9,14 @@ const TYPE_INFO = {
   ambigua: { label: 'Ambigua', icon: 'thought' },
 };
 const CONFIDENCE_LABELS = { alta: 'Confianza alta', media: 'Confianza media', baja: 'Confianza baja' };
+const EXAMPLES = [
+  '¡Qué día tan bonito!',
+  'Tengo mariposas en el estómago',
+  'Se me hizo un nudo en la garganta',
+  'Eso fue pan comido',
+  'Vi a la niña con el telescopio',
+  'Mañana vamos al parque',
+];
 
 function block(title, text) {
   if (!text) return null;
@@ -55,6 +63,7 @@ function resultCard(result) {
 
 export function therapistAiScreen() {
   const statusBadge = el('span', { class: 'badge' }, 'Revisando conexión…');
+  const demoHint = el('p', { class: 'note' });
   const phraseInput = el('textarea', {
     id: 'phrase', class: 'input textarea', rows: '2', maxlength: '300',
     required: true, placeholder: 'Ej.: ¡Qué día tan bonito!',
@@ -66,9 +75,23 @@ export function therapistAiScreen() {
   const submit = el('button', { class: 'btn', type: 'submit' }, 'Analizar');
   const resultBox = el('div', { class: 'ai-result', 'aria-live': 'polite' });
 
-    getAiStatus()
-    .then(({ modo, proveedor }) => {
-      statusBadge.textContent = modo === 'ia' ? `IA conectada (${proveedor})` : 'Modo demostración';
+  const examples = el('div', { class: 'chips' },
+    EXAMPLES.map((text) => {
+      const chip = el('button', { class: 'chip', type: 'button' }, text);
+      chip.addEventListener('click', () => {
+        phraseInput.value = text;
+        phraseInput.focus();
+      });
+      return chip;
+    })
+  );
+
+  getAiStatus()
+    .then(({ modo, proveedores }) => {
+      statusBadge.textContent = modo === 'ia' ? `IA conectada (${proveedores.join(' + ')})` : 'Modo demostración';
+      demoHint.textContent = modo === 'demo'
+        ? 'En modo demostración solo se reconocen frases de ejemplo. Toca una de las de abajo.'
+        : '';
     })
     .catch(() => {
       statusBadge.textContent = 'Servidor sin conexión: ejecuta "npm run server"';
@@ -83,12 +106,15 @@ export function therapistAiScreen() {
     submit.textContent = 'Analizando…';
     resultBox.replaceChildren(el('p', { class: 'note' }, 'Un momento…'));
     try {
-      const { resultado } = await analyzePhrase(phrase, contextInput.value.trim());
-      resultBox.replaceChildren(resultCard(resultado));
-    } catch (error) {
+        const { resultado, modo } = await analyzePhrase(phrase, contextInput.value.trim());
       resultBox.replaceChildren(
-        el('div', { class: 'card ai-error' }, el('strong', {}, 'No se pudo analizar. '), error.message)
+        ...(modo === 'respaldo'
+          ? [el('p', { class: 'note' }, 'La IA no estaba disponible: esta es una respuesta de ejemplo preparada.')]
+          : []),
+        resultCard(resultado)
       );
+    } catch (error) {
+      resultBox.replaceChildren(el('div', { class: 'card ai-error' }, error.message));
     } finally {
       submit.disabled = false;
       submit.textContent = 'Analizar';
@@ -98,6 +124,7 @@ export function therapistAiScreen() {
   return el('section', { class: 'screen' },
     el('h1', {}, 'Asistente de IA'),
     el('div', { class: 'tags' }, statusBadge),
+    demoHint,
     el('p', { class: 'lead' },
       'Analiza una frase y te explica qué quiso decir y cómo darse cuenta. Revisa siempre lo que sugiere antes de usarlo con el niño.'),
     el('form', { class: 'stack stack--wide', onsubmit: handleSubmit },
@@ -107,8 +134,11 @@ export function therapistAiScreen() {
       contextInput,
       submit
     ),
-        el('p', { class: 'note' },
+    el('p', { class: 'label' }, 'Prueba con un ejemplo'),
+    examples,
+    el('p', { class: 'note' },
       'No escribas nombres ni datos personales: el texto se envía a un servicio de IA externo y, en los planes gratuitos, el proveedor puede usarlo para mejorar sus productos. La IA puede equivocarse y no hace evaluaciones clínicas.'),
+    resultBox,
     el('a', { class: 'btn btn--ghost', href: '#/terapeuta' }, 'Volver al panel')
   );
 }

@@ -93,7 +93,62 @@ const DEMOS = [
       nota_para_adulto: '',
     },
   },
+    {
+    match: 'nudo en la garganta',
+    result: {
+      tipo: 'metafora',
+      significado: 'La persona siente una emoción fuerte, como tristeza, miedo o ganas de llorar, y le cuesta hablar.',
+      pistas: ['No hay un nudo de verdad en el cuerpo', 'Se usa cuando una emoción fuerte aprieta la garganta', 'Suele pasar antes de llorar o ante algo muy emotivo'],
+      explicacion_para_nino: 'Cuando alguien siente una emoción muy fuerte, la garganta se siente apretada, como si tuviera un nudo. Por eso dice que se le hizo un nudo, aunque no haya ningún nudo de verdad.',
+      interpretaciones: [],
+      confianza: 'alta',
+      nota_para_adulto: 'Es un buen momento para hablar de cómo se siente el cuerpo cuando hay emociones fuertes.',
+    },
+  },
+  {
+    match: 'ojo de la cara',
+    result: {
+      tipo: 'metafora',
+      significado: 'Algo costó muchísimo dinero.',
+      pistas: ['Nadie paga con un ojo de verdad', 'Se usa para decir que algo es carísimo'],
+      explicacion_para_nino: 'Decir que algo costó un ojo de la cara significa que fue muy, muy caro. No es que se haya pagado con un ojo.',
+      interpretaciones: [],
+      confianza: 'alta',
+      nota_para_adulto: '',
+    },
+  },
+  {
+    match: 'en las nubes',
+    result: {
+      tipo: 'metafora',
+      significado: 'La persona está distraída, pensando en otra cosa.',
+      pistas: ['La persona no está de verdad en las nubes', 'Se dice de quien no presta atención a lo que pasa'],
+      explicacion_para_nino: 'Estar en las nubes significa estar distraído, pensando en otra cosa y no en lo que pasa ahora.',
+      interpretaciones: [],
+      confianza: 'alta',
+      nota_para_adulto: '',
+    },
+  },
+  {
+    match: 'que buen trabajo',
+    result: {
+      tipo: 'sarcasmo',
+      significado: 'Quien lo dice piensa que el trabajo salió mal y lo expresa diciendo lo contrario.',
+      pistas: ['Hay un error o un desorden a la vista', 'El tono suena burlón o molesto', 'Dice algo bueno sobre algo que salió mal'],
+      explicacion_para_nino: 'La persona dijo "qué buen trabajo", pero en realidad piensa que algo no salió bien. Dijo lo contrario de lo que piensa. Eso es sarcasmo.',
+      interpretaciones: [],
+      confianza: 'media',
+      nota_para_adulto: 'Sin contexto también podría ser un elogio de verdad. Conviene fijarse en la situación y en el tono.',
+    },
+  },
 ];
+
+// Devuelve la respuesta de ejemplo si la frase está en la lista, o null si no
+export function findDemo(frase) {
+  const key = normalize(frase);
+  const found = DEMOS.find((d) => key.includes(d.match));
+  return found ? found.result : null;
+}
 
 export function demoAnalysis(frase) {
   const key = normalize(frase);
@@ -101,12 +156,12 @@ export function demoAnalysis(frase) {
   if (found) return found.result;
   return {
     tipo: 'ambigua',
-    significado: 'En modo demostración solo se reconocen algunas frases de ejemplo.',
+    significado: 'Esta frase no está entre los ejemplos del modo demostración.',
     pistas: [],
     explicacion_para_nino: '',
     interpretaciones: [],
     confianza: 'baja',
     nota_para_adulto:
-      'Prueba con: "¡Qué día tan bonito!", "Tengo mariposas en el estómago", "Eso fue pan comido", "Vi a la niña con el telescopio" o "Mañana vamos al parque". Para analizar cualquier frase, conecta la IA en el archivo .env.',
+      'El modo demostración solo reconoce frases de ejemplo. Toca uno de los ejemplos que aparecen debajo del formulario, o conecta la IA en .env para analizar cualquier frase.',
   };
 }
