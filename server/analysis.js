@@ -1,5 +1,9 @@
+import { sanitizeScene } from '../src/illustrations/vocab.js';
 const TYPES = ['literal', 'sarcasmo', 'metafora', 'ambigua'];
 const CONFIDENCE = ['alta', 'media', 'baja'];
+
+// Convierte el texto de la IA en un objeto validado. Lanza error si no es JSON.
+// Valida el borrador de ejercicio. Los mensajes con "JSON" hacen que el servidor reintente.
 
 // Convierte el texto de la IA en un objeto validado. Lanza error si no es JSON.
 export function parseAnalysis(text) {
@@ -24,7 +28,38 @@ export function parseAnalysis(text) {
     nota_para_adulto: String(data.nota_para_adulto || ''),
   };
 }
+// Valida el borrador de ejercicio. Los mensajes con "JSON" hacen que el servidor reintente.
+export function parseExercise(text, optionCount) {
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('La respuesta no contiene JSON');
+  const data = JSON.parse(text.slice(start, end + 1));
 
+  const options = Array.isArray(data.opciones)
+    ? data.opciones.map((o) => String(o).trim()).filter(Boolean)
+    : [];
+  const correct = Number(data.correcta);
+
+  if (options.length !== optionCount) {
+    throw new Error(`JSON: se esperaban ${optionCount} opciones y llegaron ${options.length}`);
+  }
+  if (!Number.isInteger(correct) || correct < 0 || correct >= options.length) {
+    throw new Error('JSON: el índice de la respuesta correcta no es válido');
+  }
+  const historia = String(data.historia || '').trim();
+  const pregunta = String(data.pregunta || '').trim();
+  if (!historia || !pregunta) throw new Error('JSON: faltan la historia o la pregunta');
+
+  return {
+    historia,
+    pregunta,
+    opciones: options,
+    correcta: correct,
+    explicacion: String(data.explicacion || '').trim(),
+    pistas: Array.isArray(data.pistas) ? data.pistas.map(String).slice(0, 4) : [],
+    escena: sanitizeScene(data.escena), // null si la IA no la describió bien
+  };
+}
 // ---------- Modo demostración: respuestas preparadas ----------
 const normalize = (text) =>
   text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();

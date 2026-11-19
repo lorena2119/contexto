@@ -337,3 +337,33 @@ h2 { font-size: 1.25rem; font-weight: 800; margin: 0 0 0.35rem; }
   cursor: pointer;
 }
 .chip:hover { background: #fff; border-color: var(--accent); }
+/* Ilustraciones de los ejercicios */
+.illustration { margin: 0 0 1.25rem; }
+.illustration svg { display: block; width: 100%; height: auto; border-radius: 22px; box-shadow: var(--shadow); }
+.illustration--strip { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.illustration__panel { position: relative; margin: 0; }
+.illustration__num {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.exercise .illustration { max-width: 560px; }
+/* Editor de ilustración */
+.scene-editor { margin: 0.5rem 0 1rem; }
+.check-row { display: flex; align-items: center; gap: 0.6rem; font-weight: 600; margin-bottom: 0.8rem; cursor: pointer; }
+.check-row input { width: 22px; height: 22px; accent-color: var(--primary); }
+.scene-preview { max-width: 420px; margin-bottom: 1rem; }
+.scene-controls { display: grid; gap: 0.6rem; }
+.scene-controls[hidden] { display: none; }
+.chip--static { display: inline-flex; align-items: center; gap: 0.4rem; cursor: default; }
+.chip__x { border: none; background: none; color: var(--primary); font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0 0.2rem; }
+.lesson-subtitle { margin: 1rem 0 0.4rem; }

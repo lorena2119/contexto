@@ -2,6 +2,7 @@ import { el } from '../utils/dom.js';
 import { icon } from './icons.js';
 import { CATEGORIES } from '../data/categories.js';
 import { isSpeechAvailable, speak, stopSpeech } from '../services/speech.js';
+import { illustrationFor } from './illustration.js';
 
 const HINT_AFTER_MS = 10000; // sin respuesta: se repite la pregunta
 const MAX_HINTS = 2;
@@ -113,7 +114,7 @@ export function createExerciseView(exercise, { position, total, onNext, onExit }
   const dots = el('div', { class: 'progress', role: 'img', 'aria-label': `Ejercicio ${position} de ${total}` },
     Array.from({ length: total }, (_, i) => el('span', { class: i < position ? 'dot dot--on' : 'dot' }))
   );
-
+  const picture = illustrationFor(exercise);
   const root = el('div', { class: 'exercise-view' },
     el('div', { class: 'exercise-head' },
       el('span', { class: 'badge badge--icon' }, icon(category.icon, 16), category.childLabel),
@@ -124,6 +125,7 @@ export function createExerciseView(exercise, { position, total, onNext, onExit }
         onclick: () => { cleanup(); onExit(); },
       }, 'Salir')
     ),
+    picture,
     el('div', { class: 'card story' },
       el('p', { class: 'story__text' }, exercise.story),
       listenButton

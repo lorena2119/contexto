@@ -2,6 +2,7 @@ import { el } from '../utils/dom.js';
 import { CATEGORIES } from '../data/categories.js';
 import { LEVELS, getExercises } from '../services/exerciseBank.js';
 import { icon } from '../components/icons.js';
+import { illustrationFor } from '../components/illustration.js';
 
 function field(id, label, options, onChange) {
   const select = el('select', {
@@ -23,6 +24,7 @@ function exerciseCard(ex) {
       el('span', { class: 'badge' }, `Nivel ${ex.level}`),
       el('span', { class: 'badge' }, `Versión ${ex.version}`)
     ),
+    illustrationFor(ex),
     el('p', { class: 'exercise__story' }, ex.story),
     el('h2', { class: 'exercise__question' }, ex.question),
     el('ul', { class: 'exercise__options' },

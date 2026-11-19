@@ -3,7 +3,7 @@ import { STORAGE_KEY } from './config.js';
 function freshState() {
   // progress: { [categoria]: { level, sessions, stoppedStreak } }
   // history: lista de sesiones (ver services/history.js)
-  return { nickname: '', progress: {}, history: [] };
+  return { nickname: '', progress: {}, history: [], customExercises: [] };
 }
 
 export function loadState() {
