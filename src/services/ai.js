@@ -7,14 +7,23 @@ async function request(path, options) {
   return data;
 }
 
+function post(path, body) {
+  return request(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
 export function getAiStatus() {
   return request('/api/estado');
 }
 
 export function analyzePhrase(frase, contexto) {
-  return request('/api/analizar', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ frase, contexto }),
-  });
+  return post('/api/analizar', { frase, contexto });
+}
+
+// Pide a la IA un borrador de lección (con su escena) para que el terapeuta lo revise
+export function generateExercise({ frase, contexto, tipo, significado, nivel }) {
+  return post('/api/ejercicio', { frase, contexto, tipo, significado, nivel });
 }

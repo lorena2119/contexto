@@ -1,5 +1,6 @@
 import { EXERCISES } from '../data/exercises.js';
 import { CATEGORIES } from '../data/categories.js';
+import { loadState, saveState } from '../state.js';
 
 export const LEVELS = [1, 2, 3];
 export const VERSIONS = ['A', 'B'];
@@ -9,8 +10,19 @@ export function optionsCountForLevel(level) {
   return level + 1;
 }
 
+// ---------- Lecciones agregadas por el terapeuta (se guardan en localStorage) ----------
+export function getCustomExercises() {
+  const state = loadState();
+  return Array.isArray(state.customExercises) ? state.customExercises : [];
+}
+
+// Banco completo: ejercicios base + lecciones del terapeuta
+export function getAllExercises() {
+  return [...EXERCISES, ...getCustomExercises()];
+}
+
 export function getExercises({ category, level, version, status = 'aprobado' } = {}) {
-  return EXERCISES.filter((ex) =>
+  return getAllExercises().filter((ex) =>
     (!category || ex.category === category) &&
     (!level || ex.level === level) &&
     (!version || ex.version === version) &&
@@ -19,7 +31,11 @@ export function getExercises({ category, level, version, status = 'aprobado' } =
 }
 
 export function getExerciseById(id) {
-  return EXERCISES.find((ex) => ex.id === id) || null;
+  return getAllExercises().find((ex) => ex.id === id) || null;
+}
+
+export function isCustomExercise(id) {
+  return getCustomExercises().some((ex) => ex.id === id);
 }
 
 export function validateExercise(ex) {
@@ -45,7 +61,23 @@ export function validateExercise(ex) {
   return errors;
 }
 
-// Devuelve una lista de problemas (vacía si todo está bien)
+// Devuelve { ok: true } o { ok: false, errors: [...] }
+export function addCustomExercise(exercise) {
+  const errors = validateExercise(exercise);
+  if (errors.length) return { ok: false, errors };
+  const state = loadState();
+  const current = Array.isArray(state.customExercises) ? state.customExercises : [];
+  saveState({ ...state, customExercises: [...current, exercise] });
+  return { ok: true };
+}
+
+export function deleteCustomExercise(id) {
+  const state = loadState();
+  const current = Array.isArray(state.customExercises) ? state.customExercises : [];
+  saveState({ ...state, customExercises: current.filter((ex) => ex.id !== id) });
+}
+
+// Devuelve una lista de problemas (vacía si todo está bien). Revisa solo los ejercicios base.
 export function validateBank() {
   const problems = [];
   const ids = new Set();

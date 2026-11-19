@@ -1,6 +1,7 @@
 import { el } from '../utils/dom.js';
 import { icon } from '../components/icons.js';
 import { getAiStatus, analyzePhrase } from '../services/ai.js';
+import { canBecomeLesson, createLessonEditor } from '../components/lesson-editor.js';
 
 const TYPE_INFO = {
   literal: { label: 'Literal', icon: 'check' },
@@ -9,6 +10,7 @@ const TYPE_INFO = {
   ambigua: { label: 'Ambigua', icon: 'thought' },
 };
 const CONFIDENCE_LABELS = { alta: 'Confianza alta', media: 'Confianza media', baja: 'Confianza baja' };
+
 const EXAMPLES = [
   '¡Qué día tan bonito!',
   'Tengo mariposas en el estómago',
@@ -46,7 +48,21 @@ function interpretationsBlock(items) {
   );
 }
 
-function resultCard(result) {
+function lessonSection(result, phrase, context, onDone) {
+  const lessonBox = el('div', { class: 'lesson-box' });
+  if (!canBecomeLesson(result)) {
+    return el('p', { class: 'ai-meta' }, 'Solo las frases con sarcasmo o metáfora se pueden agregar como lección.');
+  }
+  const addButton = el('button', { class: 'btn btn--small', type: 'button' },
+    icon('plus', 20), 'Agregar como lección');
+  addButton.addEventListener('click', () => {
+    addButton.remove();
+    lessonBox.replaceChildren(createLessonEditor({ phrase, context, result, onDone }));
+  });
+  return el('div', { class: 'ai-block' }, addButton, lessonBox);
+}
+
+function resultCard(result, phrase, context, onDone) {
   const info = TYPE_INFO[result.tipo] || TYPE_INFO.ambigua;
   return el('article', { class: 'card ai-card' },
     el('div', { class: 'tags' },
@@ -57,7 +73,8 @@ function resultCard(result) {
     listBlock('Pistas para darse cuenta', result.pistas),
     block('Cómo explicárselo al niño', result.explicacion_para_nino),
     interpretationsBlock(result.interpretaciones),
-    block('Nota para el adulto', result.nota_para_adulto)
+    block('Nota para el adulto', result.nota_para_adulto),
+    lessonSection(result, phrase, context, onDone)
   );
 }
 
@@ -90,28 +107,37 @@ export function therapistAiScreen() {
     .then(({ modo, proveedores }) => {
       statusBadge.textContent = modo === 'ia' ? `IA conectada (${proveedores.join(' + ')})` : 'Modo demostración';
       demoHint.textContent = modo === 'demo'
-        ? 'En modo demostración solo se reconocen frases de ejemplo. Toca una de las de abajo.'
+        ? 'En modo demostración solo se reconocen frases de ejemplo y no se pueden crear lecciones.'
         : '';
     })
     .catch(() => {
       statusBadge.textContent = 'Servidor sin conexión: ejecuta "npm run server"';
     });
 
+  function reset() {
+    resultBox.replaceChildren();
+    phraseInput.value = '';
+    contextInput.value = '';
+    phraseInput.focus();
+    window.scrollTo(0, 0);
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     const phrase = phraseInput.value.trim();
+    const context = contextInput.value.trim();
     if (!phrase) return;
 
     submit.disabled = true;
     submit.textContent = 'Analizando…';
     resultBox.replaceChildren(el('p', { class: 'note' }, 'Un momento…'));
     try {
-        const { resultado, modo } = await analyzePhrase(phrase, contextInput.value.trim());
+      const { resultado, modo } = await analyzePhrase(phrase, context);
       resultBox.replaceChildren(
         ...(modo === 'respaldo'
           ? [el('p', { class: 'note' }, 'La IA no estaba disponible: esta es una respuesta de ejemplo preparada.')]
           : []),
-        resultCard(resultado)
+        resultCard(resultado, phrase, context, reset)
       );
     } catch (error) {
       resultBox.replaceChildren(el('div', { class: 'card ai-error' }, error.message));
