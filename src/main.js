@@ -1,4 +1,5 @@
 import './styles/main.css';
+import './accessibility.js'
 import { APP_NAME } from './config.js';
 import { registerRoute, startRouter } from './router.js';
 import { homeScreen } from './screens/home.js';

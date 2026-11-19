@@ -1,0 +1,242 @@
+[
+ {
+  "id": "L01",
+  "frase": "Mañana vamos al parque.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L02",
+  "frase": "Me duele la cabeza porque no dormí bien.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L03",
+  "frase": "Guarda los cuadernos en la mochila.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L04",
+  "frase": "Hoy hace mucho calor.",
+  "contexto": "Es mediodía y están en la playa",
+  "esperado": "literal"
+ },
+ {
+  "id": "L05",
+  "frase": "El bus sale a las siete.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L06",
+  "frase": "Me gustó mucho la película.",
+  "contexto": "Salió del cine sonriendo y se la recomendó a todos",
+  "esperado": "literal"
+ },
+ {
+  "id": "L07",
+  "frase": "Tengo hambre, vamos a almorzar.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L08",
+  "frase": "La tarea está sobre la mesa.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L09",
+  "frase": "Estoy muy cansado porque corrí una hora.",
+  "contexto": "",
+  "esperado": "literal"
+ },
+ {
+  "id": "L10",
+  "frase": "Qué rico huele el pan.",
+  "contexto": "Acaban de sacarlo del horno",
+  "esperado": "literal"
+ },
+ {
+  "id": "S01",
+  "frase": "¡Qué día tan bonito!",
+  "contexto": "Llueve a cántaros y se mojó porque no tenía paraguas",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S02",
+  "frase": "¡Qué buen amigo eres!",
+  "contexto": "Su amigo se comió su lonchera sin preguntarle",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S03",
+  "frase": "Genial, justo lo que necesitaba.",
+  "contexto": "Se le dañó la bicicleta de camino al colegio",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S04",
+  "frase": "¡Excelente trabajo!",
+  "contexto": "Derramó la sopa sobre el cuaderno de su compañero",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S05",
+  "frase": "Qué rápido eres.",
+  "contexto": "Tardó una hora en amarrarse los zapatos",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S06",
+  "frase": "Me encanta que me despierten a las cinco de la mañana.",
+  "contexto": "Su hermano puso música a todo volumen de madrugada",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S07",
+  "frase": "Qué silencio tan tranquilo hay aquí.",
+  "contexto": "Veinte niños gritan y corren por el salón",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S08",
+  "frase": "¡Gracias por la ayuda!",
+  "contexto": "Su compañero se quedó mirando mientras él cargaba todas las cajas",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S09",
+  "frase": "Qué idea tan inteligente, dejar la tarea en casa.",
+  "contexto": "Olvidó el trabajo y la profesora lo pidió hoy",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "S10",
+  "frase": "Perfecto, otra vez lloviendo.",
+  "contexto": "Habían planeado jugar fútbol toda la tarde",
+  "esperado": "sarcasmo"
+ },
+ {
+  "id": "M01",
+  "frase": "Tengo mariposas en el estómago.",
+  "contexto": "Mañana es su presentación en el colegio",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M02",
+  "frase": "Se me hizo un nudo en la garganta.",
+  "contexto": "Se despidió de su mejor amigo",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M03",
+  "frase": "Eso fue pan comido.",
+  "contexto": "Terminó el examen de matemáticas en diez minutos",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M04",
+  "frase": "Estás en las nubes.",
+  "contexto": "La profesora le habla y no responde",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M05",
+  "frase": "Mi mamá tiene un corazón de oro.",
+  "contexto": "",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M06",
+  "frase": "Se me fue el alma a los pies.",
+  "contexto": "Escuchó un trueno muy fuerte",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M07",
+  "frase": "Estoy muerto de la risa.",
+  "contexto": "Un compañero contó un chiste muy gracioso",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M08",
+  "frase": "Me estás tomando del pelo.",
+  "contexto": "Su primo le dijo que había un dinosaurio en el patio",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M09",
+  "frase": "Llovía a cántaros.",
+  "contexto": "",
+  "esperado": "metafora"
+ },
+ {
+  "id": "M10",
+  "frase": "Metí la pata en el examen.",
+  "contexto": "Se equivocó en una pregunta fácil",
+  "esperado": "metafora"
+ },
+ {
+  "id": "A01",
+  "frase": "Vi a la niña con el telescopio.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A02",
+  "frase": "Qué bien lo hiciste.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A03",
+  "frase": "Pues claro, como tú digas.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A04",
+  "frase": "Me encanta tu peinado.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A05",
+  "frase": "Qué buena nota sacaste.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A06",
+  "frase": "Qué lindo regalo.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A07",
+  "frase": "Mira quién llegó.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A08",
+  "frase": "Juan golpeó a Pedro porque estaba enojado.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A09",
+  "frase": "Tengo que irme, tú sabes cómo es.",
+  "contexto": "",
+  "esperado": "ambigua"
+ },
+ {
+  "id": "A10",
+  "frase": "Ya veo.",
+  "contexto": "",
+  "esperado": "ambigua"
+ }
+]

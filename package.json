@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server/index.js"
+    "server": "node server/index.js",
+    "evaluar": "node server/evaluar.js"
   },
   "devDependencies": {
     "vite": "^8.3.6"
